@@ -1,15 +1,108 @@
-// Step 1: Simulate User Behavior
-// - Add event listeners for button clicks and form submissions.
-// - Use JavaScript to dynamically update the DOM based on user actions.
+function displayError(message) {
+  const errorElement = document.getElementById("error-message");
 
-// Step 2: DOM Manipulation Functions
-// - Implement functions to add, update, and remove DOM elements.
-// - Ensure all elements are dynamically created with appropriate attributes and content.
+  if (!errorElement) return false;
 
-// Step 3: Error Handling
-// - Display error messages in the DOM for invalid inputs or missing elements.
-// - Create reusable functions to handle common error cases.
+  errorElement.textContent = message;
+  errorElement.classList.remove("hidden");
+  return true;
+}
 
-// Step 4: Reusable Utilities
-// - Create modular utility functions, such as createElement(tag, attributes).
-// - Ensure all functions follow DRY principles for maintainability.
+function clearError() {
+  const errorElement = document.getElementById("error-message");
+
+  if (!errorElement) return;
+
+  errorElement.textContent = "";
+  errorElement.classList.add("hidden");
+}
+
+function addElementToDOM(containerId, content) {
+  const container = document.getElementById(containerId);
+
+  if (!container) return null;
+
+  const element = document.createElement("p");
+  element.textContent = content;
+  container.appendChild(element);
+  return element;
+}
+
+function removeElementFromDOM(elementId) {
+  const element = document.getElementById(elementId);
+
+  if (!element || !element.parentNode) return false;
+
+  element.parentNode.removeChild(element);
+  return true;
+}
+
+function simulateClick(containerId, content) {
+  return addElementToDOM(containerId, content);
+}
+
+function handleFormSubmit(formId, contentId) {
+  const form = document.getElementById(formId);
+
+  if (!form) {
+    displayError("Form not found");
+    return false;
+  }
+
+  const input = form.querySelector("input");
+  if (!input) {
+    displayError("Input field not found");
+    return false;
+  }
+
+  const value = input.value.trim();
+  if (!value) {
+    displayError("Input cannot be empty");
+    return false;
+  }
+
+  const addedElement = addElementToDOM(contentId, value);
+  if (!addedElement) {
+    displayError("Content area not found");
+    return false;
+  }
+
+  clearError();
+  return true;
+}
+
+function initializeDOMBehavior() {
+  const clickButton = document.getElementById("simulate-click");
+  const form = document.getElementById("user-form");
+
+  if (clickButton) {
+    clickButton.addEventListener("click", () => {
+      simulateClick("dynamic-content", "Button Clicked!");
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      handleFormSubmit("user-form", "dynamic-content");
+    });
+  }
+}
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializeDOMBehavior);
+  } else {
+    initializeDOMBehavior();
+  }
+}
+
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = {
+    addElementToDOM,
+    removeElementFromDOM,
+    simulateClick,
+    handleFormSubmit,
+    initializeDOMBehavior,
+  };
+}

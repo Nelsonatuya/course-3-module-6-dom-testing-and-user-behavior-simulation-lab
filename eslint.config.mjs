@@ -3,7 +3,7 @@ import pluginJs from "@eslint/js";
 
 const customGlobals = {
   ...globals.browser,
-  module: 'readonly',
+  module: "readonly",
 };
 
 export default [
@@ -11,4 +11,13 @@ export default [
     languageOptions: { globals: customGlobals },
   },
   pluginJs.configs.recommended,
+  {
+    files: ["test/**/*.js"],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+      },
+    },
+  },
 ];
